@@ -5,19 +5,19 @@ import java.io.*;
 
 public class BusArrival{
 
-	String lineName;
-	String stopCode;
-	String mainURL = "http://countdown.api.tfl.gov.uk/interfaces/ura/instant_V1";
-	String returnListURL = "&ReturnList=StopCode1,EstimatedTime,ExpireTime,RegistrationNumber";
-	String serverOutput = new String();
-	String[] arrivalTime;
+	private String lineName;
+	private String stopCode;
+	private String mainURL = "http://countdown.api.tfl.gov.uk/interfaces/ura/instant_V1";
+	private String returnListURL = "&ReturnList=StopCode1,EstimatedTime,ExpireTime,RegistrationNumber";
+	private String serverOutput = new String();
+	private String[] arrivalTime;
 
 	public BusArrival(String busID, String stopID){
 		lineName = busID;
 		stopCode = stopID;
 	}//constructor ends
 
-	String getData(){
+	private String getData(){
 		
 		try {
 			URL apiURL = new URL(mainURL+"?LineName="+lineName+"&stopCode1="+stopCode+returnListURL);
@@ -43,14 +43,14 @@ public class BusArrival{
 		
 	}//getData() ends
 	
-	void printError(String error){ //Later change to accommodate error printing in android
+	private void printError(String error){ //Later change to accommodate error printing in android
 		
 		System.out.println(error);
 		
 	}//printError() ends
 	
 	//Parse data and get epoch arrival timing parameter
-	String[] parseData(String input){
+	private String[] parseData(String input){
 		
 		String delims1 = "[\\[ \\]]+";
 		String delims2 = "[, \"]+";
@@ -76,7 +76,7 @@ public class BusArrival{
 	}//parseData() ends
 	
 	//Calculate epoch arrival timing to date format, to display remaining time later compare to android sntp client
-	Date epochToDate(String time){
+	private Date epochToDate(String time){
 		
 		Date date = new Date(Long.parseLong(time));
 		return date;
@@ -84,7 +84,7 @@ public class BusArrival{
 	}//epochToRemaining(String time) ends
 	
 	//Get all arrival time available for certain bus and stop
-	ArrayList<Date> getArrival(){
+	public ArrayList<Date> getArrival(){
 		
 		ArrayList<Date> dateList = new ArrayList<Date>();
 		String input = getData();
