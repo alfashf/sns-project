@@ -58,18 +58,31 @@ public class BusArrival{
 		String[] records = null;
 		ArrayList<String[]> list = new ArrayList<String[]>();
 		
-		//Split every record and add to the ArrayList
-		for(int i=0;i<dataArray.length;i++){
-			records = dataArray[i].split(delims2);
-			if(records.length>3)
-				list.add(records);
-		}//for ends
+		try{
+			//Split every record and add to the ArrayList
+			for(int i=0;i<dataArray.length;i++){
+				records = dataArray[i].split(delims2);
+				if(records.length>3)
+					list.add(records);
+			}//for ends
+		}//try ends
+		
+		catch(ArrayIndexOutOfBoundsException e){
+			e.printStackTrace();
+			printError("Error: unexpected API output..");
+		}//catch ends
 		
 		arrivalTime = new String[list.size()];
         
-		//Get arrival epoch time (array column number 3) for each record
-		for(int i=0;i<list.size();i++)
-			arrivalTime[i]=list.get(i)[3];
+		try{
+			//Get arrival epoch time (array column number 3) for each record
+			for(int i=0;i<list.size();i++)
+				arrivalTime[i]=list.get(i)[3];}//try ends
+		
+		catch(ArrayIndexOutOfBoundsException e){
+			e.printStackTrace();
+			printError("Error: array index out of bound..");
+		}//catch ends
 					
 		return arrivalTime;
 		
@@ -78,7 +91,17 @@ public class BusArrival{
 	//Calculate epoch arrival timing to date format, to display remaining time later compare to android sntp client
 	private Date epochToDate(String time){
 		
-		Date date = new Date(Long.parseLong(time));
+		Date date = null;
+		
+		try{
+			date = new Date(Long.parseLong(time));
+		}//try ends
+		
+		catch(NumberFormatException e){
+			e.printStackTrace();
+			printError("Error: Could not convert time data..");
+		}//catch ends
+		
 		return date;
 		
 	}//epochToRemaining(String time) ends
