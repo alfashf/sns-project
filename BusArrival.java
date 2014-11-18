@@ -9,7 +9,6 @@ public class BusArrival{
 	private String stopCode;
 	private String mainURL = "http://countdown.api.tfl.gov.uk/interfaces/ura/instant_V1";
 	private String returnListURL = "&ReturnList=StopCode1,EstimatedTime,ExpireTime,RegistrationNumber";
-	private String serverOutput = new String();
 	private String[] arrivalTime;
 
 	public BusArrival(String busID, String stopID){
@@ -18,6 +17,8 @@ public class BusArrival{
 	}//constructor ends
 
 	private String getData(){
+		
+		String serverOutput = null;
 		
 		try {
 			URL apiURL = new URL(mainURL+"?LineName="+lineName+"&stopCode1="+stopCode+returnListURL);
@@ -52,7 +53,7 @@ public class BusArrival{
 	//Parse data and get epoch arrival timing parameter
 	private String[] parseData(String input){
 		
-		String delims1 = "[\\[ \\]]+";
+		String delims1 = "[\\[\\]]+";
 		String delims2 = "[, \"]+";
 		String[] dataArray = input.split(delims1); //index zero is empty
 		String[] records = null;
@@ -62,14 +63,14 @@ public class BusArrival{
 			//Split every record and add to the ArrayList
 			for(int i=0;i<dataArray.length;i++){
 				records = dataArray[i].split(delims2);
-				if(records.length>3)
+				if(records[0].equals("1")) //add responseType=1 only (prediction data only)
 					list.add(records);
 			}//for ends
 		}//try ends
 		
 		catch(ArrayIndexOutOfBoundsException e){
 			e.printStackTrace();
-			printError("Error: unexpected API output..");
+			printError("Error: unexpected API response..");
 		}//catch ends
 		
 		arrivalTime = new String[list.size()];
@@ -81,7 +82,7 @@ public class BusArrival{
 		
 		catch(ArrayIndexOutOfBoundsException e){
 			e.printStackTrace();
-			printError("Error: array index out of bound..");
+			printError("Error: unexpected API response, array index out of bound..");
 		}//catch ends
 					
 		return arrivalTime;
